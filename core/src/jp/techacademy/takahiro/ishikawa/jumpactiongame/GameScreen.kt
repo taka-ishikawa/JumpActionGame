@@ -12,8 +12,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 
 class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     companion object {
-        val CAMERA_WIDTH = 10f
-        val CAMERA_HEIGHT = 15f
+        const val CAMERA_WIDTH = 10f
+        const val CAMERA_HEIGHT = 15f
     }
 
     private val mBg: Sprite
