@@ -1,6 +1,9 @@
 package jp.techacademy.takahiro.ishikawa.jumpactiongame
 
-class Player(): GameObject() {
+import com.badlogic.gdx.graphics.Texture
+
+class Player(texture: Texture, srcX: Int, srcY: Int, srcWidth: Int, srcHeight: Int)
+    : GameObject(texture, srcX, srcY, srcWidth, srcHeight) {
     companion object {
         // 横幅、高さ
         val PLAYER_WIDTH = 1.0f
