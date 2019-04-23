@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
 import java.util.*
@@ -45,6 +46,9 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     private var mGameState: Int
     private var mHeightSoFar: Float = 0f
     private var mTouchPoint: Vector3
+    private var mFont: BitmapFont   // ←追加する
+    private var mScore: Int // ←追加する
+    private var mHighScore: Int // ←追加する
 
     init {
         // 背景の準備
@@ -71,6 +75,11 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         mGameState = GAME_STATE_READY
         mTouchPoint = Vector3()
 
+        mFont = BitmapFont(Gdx.files.internal("font.fnt"), Gdx.files.internal("font.png"), false)
+        mFont.data.setScale(0.8f)
+        mScore = 0
+        mHighScore = 0
+
         createStage()
     }
 
@@ -89,30 +98,31 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         // カメラの座標をアップデート（計算）し、スプライトの表示に反映させる
         mCamera.update()
         mGame.batch.projectionMatrix = mCamera.combined
-
         mGame.batch.begin()
-
         // 背景
         // 原点は左下
         mBg.setPosition(mCamera.position.x - CAMERA_WIDTH / 2, mCamera.position.y - CAMERA_HEIGHT / 2)
         mBg.draw(mGame.batch)
-
         // Step
         for (i in 0 until mSteps.size) {
             mSteps[i].draw(mGame.batch)
         }
-
         // Star
         for (i in 0 until mStars.size) {
             mStars[i].draw(mGame.batch)
         }
-
         // UFO
         mUfo.draw(mGame.batch)
-
         //Player
         mPlayer.draw(mGame.batch)
+        mGame.batch.end()
 
+        // スコア表示
+        mGuiCamera.update()
+        mGame.batch.projectionMatrix = mGuiCamera.combined
+        mGame.batch.begin()
+        mFont.draw(mGame.batch, "HighScore: $mHighScore", 16f, GUI_HEIGHT - 15)
+        mFont.draw(mGame.batch, "Score: $mScore", 16f, GUI_HEIGHT - 35)
         mGame.batch.end()
     }
 
