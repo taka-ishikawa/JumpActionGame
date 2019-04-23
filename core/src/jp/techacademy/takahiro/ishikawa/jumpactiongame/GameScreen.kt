@@ -19,6 +19,8 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         val CAMERA_HEIGHT = 15f
         val WORLD_WIDTH = 10f
         val WORLD_HEIGHT = 15 * 20    // 20画面分登れば終了
+        val GUI_WIDTH = 320f
+        val GUI_HEIGHT = 480f
 
         val GAME_STATE_READY = 0
         val GAME_STATE_PLAYING = 1
@@ -30,7 +32,9 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
     private val mBg: Sprite
     private val mCamera: OrthographicCamera
+    private val mGuiCamera: OrthographicCamera
     private val mViewPort: FitViewport
+    private val mGuiViewPort: FitViewport
 
     private var mRandom: Random
     private var mSteps: ArrayList<Step>
@@ -54,6 +58,11 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         mCamera = OrthographicCamera()
         mCamera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT)
         mViewPort = FitViewport(CAMERA_WIDTH, CAMERA_HEIGHT, mCamera)
+
+        // GUI用のカメラを設定する
+        mGuiCamera = OrthographicCamera()
+        mGuiCamera.setToOrtho(false, GUI_WIDTH, GUI_HEIGHT)
+        mGuiViewPort = FitViewport(GUI_WIDTH, GUI_HEIGHT, mGuiCamera)
 
         // プロパティの初期化
         mRandom = Random()
@@ -109,6 +118,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
     override fun resize(width: Int, height: Int) {
         mViewPort.update(width, height)
+        mGuiViewPort.update(width, height)
     }
 
     // ステージを作成する
@@ -171,9 +181,12 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     private fun updatePlaying(delta: Float) {
         var accel = 0f
         if (Gdx.input.isTouched) {
-            mViewPort.unproject(mTouchPoint.set(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
-            val left = Rectangle(0f, 0f, CAMERA_WIDTH / 2, CAMERA_HEIGHT)
-            val right = Rectangle(CAMERA_WIDTH / 2, 0f, CAMERA_WIDTH / 2, CAMERA_HEIGHT)
+            mGuiViewPort.unproject(mTouchPoint.set(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
+            val left = Rectangle(0f, 0f, GUI_WIDTH / 2, GUI_HEIGHT)
+            val right = Rectangle(GUI_WIDTH / 2, 0f, GUI_WIDTH / 2, GUI_HEIGHT)
+//            mViewPort.unproject(mTouchPoint.set(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
+//            val left = Rectangle(0f, 0f, CAMERA_WIDTH / 2, CAMERA_HEIGHT)
+//            val right = Rectangle(CAMERA_WIDTH / 2, 0f, CAMERA_WIDTH / 2, CAMERA_HEIGHT)
             if (left.contains(mTouchPoint.x, mTouchPoint.y)) {
                 accel = 5.0f
             }
