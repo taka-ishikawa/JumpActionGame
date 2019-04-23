@@ -241,6 +241,10 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
             if (mPlayer.boundingRectangle.overlaps(star.boundingRectangle)) {
                 star.get()
+                mScore++
+                if (mScore > mHighScore) {
+                    mHighScore = mScore
+                }
                 break
             }
         }
