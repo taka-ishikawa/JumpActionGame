@@ -219,6 +219,9 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
         // 当たり判定を行う
         checkCollision()
+
+        // ゲームオーバーか判断する
+        checkGameOver()
     }
 
     private fun updateGameOver() {
@@ -271,6 +274,13 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
                     break
                 }
             }
+        }
+    }
+
+    private fun checkGameOver() {
+        if (mHeightSoFar - CAMERA_HEIGHT / 2 > mPlayer.y) {
+            Gdx.app.log("JampActionGame", "GAMEOVER")
+            mGameState = GAME_STATE_GAMEOVER
         }
     }
 }
