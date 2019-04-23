@@ -72,6 +72,11 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
+        // カメラの中心を超えたらカメラを上に移動させる つまりキャラが画面の上半分には絶対に行かない
+        if (mPlayer.y > mCamera.position.y) {
+            mCamera.position.y = mPlayer.y
+        }
+
         // カメラの座標をアップデート（計算）し、スプライトの表示に反映させる
         mCamera.update()
         mGame.batch.projectionMatrix = mCamera.combined
