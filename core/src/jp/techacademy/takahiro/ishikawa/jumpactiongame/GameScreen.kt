@@ -1,6 +1,7 @@
 package jp.techacademy.takahiro.ishikawa.jumpactiongame
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
@@ -46,9 +47,10 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     private var mGameState: Int
     private var mHeightSoFar: Float = 0f
     private var mTouchPoint: Vector3
-    private var mFont: BitmapFont   // ←追加する
-    private var mScore: Int // ←追加する
-    private var mHighScore: Int // ←追加する
+    private var mFont: BitmapFont
+    private var mScore: Int
+    private var mHighScore: Int
+    private var mPrefs: Preferences
 
     init {
         // 背景の準備
@@ -79,6 +81,10 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         mFont.data.setScale(0.8f)
         mScore = 0
         mHighScore = 0
+
+        // ハイスコアをPreferencesから取得する
+        mPrefs = Gdx.app.getPreferences("jp.techacademy.takahiro.ishikawa.jumpactiongame") // ←追加する
+        mHighScore = mPrefs.getInteger("HIGHSCORE", 0) // ←追加する
 
         createStage()
     }
@@ -247,6 +253,10 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
                 mScore++
                 if (mScore > mHighScore) {
                     mHighScore = mScore
+
+                    //ハイスコアをPreferenceに保存する
+                    mPrefs.putInteger("HIGHSCORE", mHighScore)
+                    mPrefs.flush()
                 }
                 break
             }
