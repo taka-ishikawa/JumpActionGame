@@ -1,8 +1,11 @@
 package jp.techacademy.takahiro.ishikawa.jumpactiongame
 
+import com.badlogic.gdx.Audio
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input.Keys.R
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
@@ -13,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
 import java.util.*
+import kotlin.collections.ArrayList
 
 class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
@@ -30,6 +34,10 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
         // 重力
         val GRAVITY = -12
+
+        //音
+//        val soundBgm: Sound = Gdx.audio.newSound(Gdx.files.internal("data/bgm_alien.mp3"))
+//        val idBgm = soundBgm.play()
     }
 
     private val mBg: Sprite
@@ -41,6 +49,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     private var mRandom: Random
     private var mSteps: ArrayList<Step>
     private var mStars: ArrayList<Star>
+//    private var mEnemy: ArrayList<Enemy>
     private lateinit var mUfo: Ufo
     private lateinit var mPlayer: Player
 
@@ -53,6 +62,8 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     private var mPrefs: Preferences
 
     init {
+        //音
+
         // 背景の準備
         val bgTexture = Texture("back.png")
         // TextureRegionで切り出す時の原点は左上
@@ -74,6 +85,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         mRandom = Random()
         mSteps = ArrayList<Step>()
         mStars = ArrayList<Star>()
+//        mEnemy = ArrayList<Enemy>()
         mGameState = GAME_STATE_READY
         mTouchPoint = Vector3()
 
@@ -122,6 +134,9 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         //Player
         mPlayer.draw(mGame.batch)
         mGame.batch.end()
+
+        //Enemy
+
 
         // スコア表示
         mGuiCamera.update()
