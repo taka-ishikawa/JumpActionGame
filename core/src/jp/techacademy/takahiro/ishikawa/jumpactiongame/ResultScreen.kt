@@ -25,6 +25,20 @@ class ResultScreen(private val mGame: JumpActionGame, private val mScore: Int, p
     private val mGuiViewPort: FitViewport
     private var mFont: BitmapFont
 
+    private val soundAlien = Gdx.audio.newSound(Gdx.files.internal("alien.mp3"))
+    private val soundIdAlien = soundAlien.play()
+
+    override fun show() {
+        super.show()
+        soundAlien.setLooping(soundIdAlien, true)
+    }
+
+    override fun dispose() {
+        super.dispose()
+        soundAlien.stop(soundIdAlien)
+        soundAlien.dispose()
+    }
+
     init {
         // 背景の準備
         val bgTexture = Texture("resultback.png")

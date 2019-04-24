@@ -55,6 +55,14 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     private var mHighScore: Int
     private var mPrefs: Preferences
 
+    private val soundStart = Gdx.audio.newSound(Gdx.files.internal("start.mp3"))
+    private val soundJump = Gdx.audio.newSound(Gdx.files.internal("jump_nyu.mp3"))
+    private val soundStar = Gdx.audio.newSound(Gdx.files.internal("kirakira.mp3"))
+    private val soundKill = Gdx.audio.newSound(Gdx.files.internal("kill.mp3"))
+    private val soundKilled = Gdx.audio.newSound(Gdx.files.internal("killed.mp3"))
+    private val soundGameOver = Gdx.audio.newSound(Gdx.files.internal("piropiro.mp3"))
+    private val soundIdGameOver = soundGameOver.play()
+
     init {
         // 背景の準備
         val bgTexture = Texture("back.png")
@@ -87,11 +95,23 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         mHighScore = 0
 
         // ハイスコアをPreferencesから取得する
+
         mPrefs = Gdx.app.getPreferences("jp.techacademy.takahiro.ishikawa.jumpactiongame") // ←追加する
         mHighScore = mPrefs.getInteger("HIGHSCORE", 0) // ←追加する
 
         createStage()
     }
+
+//    override fun dispose() {
+//        // なんちゃらobjectでまとめるとかできんかな
+//        soundStart.dispose()
+//        soundJump.dispose()
+//        soundStar.dispose()
+//        soundKill.dispose()
+//        soundKilled.dispose()
+//        soundGameOver.stop(soundIdGameOver)
+//        soundGameOver.dispose()
+//    }
 
     override fun render(delta: Float) {
         // それぞれの状態をアップデートする
@@ -157,6 +177,8 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         val playerTexture = Texture("uma.png")
         val ufoTexture = Texture("ufo.png")
 
+        soundStart.play()
+
         // StepとStar(+ Enemy)をゴールの高さまで配置していく
         var y = 0f
 
@@ -206,6 +228,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
                 updatePlaying(delta)
             GAME_STATE_GAMEOVER -> {
                 updateGameOver()
+            }
         }
     }
 
@@ -252,8 +275,11 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         checkGameOver()
     }
 
+
     private fun updateGameOver() {
         if (Gdx.input.justTouched()) {
+            soundGameOver.stop(soundIdGameOver)
+            soundGameOver.dispose()
             mGame.screen = ResultScreen(mGame, mScore, mHighScore)
         }
     }
@@ -262,6 +288,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         // UFO(ゴールとの当たり判定)
         if (mPlayer.boundingRectangle.overlaps(mUfo.boundingRectangle)) {
             mGameState = GAME_STATE_GAMEOVER
+            soundGameOver.play()
             return
         }
 
@@ -275,6 +302,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
             if (mPlayer.boundingRectangle.overlaps(star.boundingRectangle)) {
                 star.get()
+                soundStar.play()
                 mScore++
                 if (mScore > mHighScore) {
                     mHighScore = mScore
@@ -297,6 +325,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
                 val enemy = mEnemy[i]
 
                 if (mPlayer.boundingRectangle.overlaps(enemy.boundingRectangle)) {
+                    soundKilled.play()
                     mGameState = GAME_STATE_GAMEOVER
                     break
                 }
@@ -314,6 +343,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
             if (mPlayer.y > step.y) {
                 if (mPlayer.boundingRectangle.overlaps(step.boundingRectangle)) {
                     mPlayer.hitStep()
+                    soundJump.play()
                     if (mRandom.nextFloat() > 0.5f) {
                         step.vanish()
                     }
@@ -334,6 +364,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
                 if (mPlayer.boundingRectangle.overlaps(enemy.boundingRectangle)) {
                     mPlayer.hitStep()
                     enemy.kill()
+                    soundKill.play()
                     break
                 }
             }
@@ -344,6 +375,8 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         if (mHeightSoFar - CAMERA_HEIGHT / 2 > mPlayer.y) {
             Gdx.app.log("JampActionGame", "GAMEOVER")
             mGameState = GAME_STATE_GAMEOVER
+            soundGameOver.loop()
+            soundGameOver.setLooping(soundIdGameOver, true)
         }
     }
 }
