@@ -187,7 +187,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
                 val typeEnemy = if(mRandom.nextFloat() > 0.8f) Enemy.ENEMY_TYPE_MOVING else Enemy.ENEMY_TYPE_STATIC
                 val xEnemy = step.x + mRandom.nextFloat() * 5 * (Math.pow(-1.0, mRandom.nextFloat().toInt().toDouble())).toFloat()
                 val yEnemy = step.y - Enemy.ENEMY_HEIGHT - mRandom.nextFloat() * 4
-                val enemy = Enemy(typeEnemy, enemyTexture, 20, 20, 160, 160)
+                val enemy = Enemy(typeEnemy, enemyTexture, 20, 20, 150, 150)
                 enemy.setPosition(xEnemy, yEnemy)
                 mEnemy.add(enemy)
             }
@@ -297,7 +297,18 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
         // Step(+ Enemy)との当たり判定
         // 上昇中はStepとの当たり判定を確認しない
+        // Enemyは当たり判定する-> GameOver
+
         if (mPlayer.velocity.y > 0) {
+            // killed by enemy
+            for (i in 0 until mEnemy.size) {
+                val enemy = mEnemy[i]
+
+                if (mPlayer.boundingRectangle.overlaps(enemy.boundingRectangle)) {
+                    mGameState = GAME_STATE_GAMEOVER
+                    break
+                }
+            }
             return
         }
 
@@ -314,6 +325,19 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
                     if (mRandom.nextFloat() > 0.5f) {
                         step.vanish()
                     }
+                    break
+                }
+            }
+        }
+
+        // kill enemy
+        for (i in 0 until mEnemy.size) {
+            val enemy = mEnemy[i]
+
+            if (mPlayer.y > enemy.y) {
+                if (mPlayer.boundingRectangle.overlaps(enemy.boundingRectangle)) {
+                    mPlayer.hitStep()
+                    enemy.kill()
                     break
                 }
             }

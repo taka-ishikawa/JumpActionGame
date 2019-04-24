@@ -51,8 +51,8 @@ class Enemy(type: Int, texture: Texture, srcX: Int, srcY: Int, srcWidth: Int, sr
     }
 
 //    +α
-//    fun kill() {
-//        mState = ENEMY_NONE
-//        setAlpha(0f)
-//    }
+    fun kill() {
+        mState = ENEMY_NONE
+        setAlpha(0f)
+    }
 }
