@@ -7,8 +7,8 @@ class Enemy(type: Int, texture: Texture, srcX: Int, srcY: Int, srcWidth: Int, sr
 
     companion object {
         // 横幅、高さ
-        val ENEMY_WIDTH = 0.8f
-        val ENEMY_HEIGHT = 0.8f
+        val ENEMY_WIDTH = 1.0f
+        val ENEMY_HEIGHT = 1.0f
 
         // 状態
         val ENEMY_EXIST = 0
