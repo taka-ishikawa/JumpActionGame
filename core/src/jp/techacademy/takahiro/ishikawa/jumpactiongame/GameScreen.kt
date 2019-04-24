@@ -1,8 +1,6 @@
 package jp.techacademy.takahiro.ishikawa.jumpactiongame
 
-import com.badlogic.gdx.Audio
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input.Keys.R
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.audio.Sound
@@ -34,10 +32,6 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
         // 重力
         val GRAVITY = -12
-
-        //音
-//        val soundBgm: Sound = Gdx.audio.newSound(Gdx.files.internal("data/bgm_alien.mp3"))
-//        val idBgm = soundBgm.play()
     }
 
     private val mBg: Sprite
@@ -62,8 +56,6 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
     private var mPrefs: Preferences
 
     init {
-        //音
-
         // 背景の準備
         val bgTexture = Texture("back.png")
         // TextureRegionで切り出す時の原点は左上
@@ -170,7 +162,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
         val maxJumpHeight = Player.PLAYER_JUMP_VELOCITY * Player.PLAYER_JUMP_VELOCITY / (2 * -GRAVITY)
         while (y < WORLD_HEIGHT - 5) {
-            val type = if(mRandom.nextFloat() > 0.8f) Step.STEP_TYPE_MOVING else Step.STEP_TYPE_STATIC
+            val type = if (mRandom.nextFloat() > 0.8f) Step.STEP_TYPE_MOVING else Step.STEP_TYPE_STATIC
             val x = mRandom.nextFloat() * (WORLD_WIDTH - Step.STEP_WIDTH)
             val step = Step(type, stepTexture, 0, 0, 144, 36)
             step.setPosition(x, y)
@@ -184,10 +176,10 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
 
 //            Enemy
             if (mRandom.nextFloat() > 0.5f) {
-                val typeEnemy = if(mRandom.nextFloat() > 0.8f) Enemy.ENEMY_TYPE_MOVING else Enemy.ENEMY_TYPE_STATIC
+                val typeEnemy = if (mRandom.nextFloat() > 0.8f) Enemy.ENEMY_TYPE_MOVING else Enemy.ENEMY_TYPE_STATIC
                 val xEnemy = step.x + mRandom.nextFloat() * 5 * (Math.pow(-1.0, mRandom.nextFloat().toInt().toDouble())).toFloat()
                 val yEnemy = step.y - Enemy.ENEMY_HEIGHT - mRandom.nextFloat() * 4
-                val enemy = Enemy(typeEnemy, enemyTexture, 20, 20, 160, 160)
+                val enemy = Enemy(typeEnemy, enemyTexture, 20, 20, 160, 150)
                 enemy.setPosition(xEnemy, yEnemy)
                 mEnemy.add(enemy)
             }
@@ -212,7 +204,7 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
                 updateReady()
             GAME_STATE_PLAYING ->
                 updatePlaying(delta)
-            GAME_STATE_GAMEOVER ->
+            GAME_STATE_GAMEOVER -> {
                 updateGameOver()
         }
     }
@@ -333,6 +325,10 @@ class GameScreen(private val mGame: JumpActionGame) : ScreenAdapter() {
         // kill enemy
         for (i in 0 until mEnemy.size) {
             val enemy = mEnemy[i]
+
+            if (enemy.mState == Enemy.ENEMY_NONE) {
+                continue
+            }
 
             if (mPlayer.y > enemy.y) {
                 if (mPlayer.boundingRectangle.overlaps(enemy.boundingRectangle)) {

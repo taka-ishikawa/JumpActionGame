@@ -2,13 +2,12 @@ package jp.techacademy.takahiro.ishikawa.jumpactiongame
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+
 
 class JumpActionGame : Game() {
     lateinit var batch: SpriteBatch
-//    lateinit var img: Texture
 
     override fun create() {
         batch = SpriteBatch()
