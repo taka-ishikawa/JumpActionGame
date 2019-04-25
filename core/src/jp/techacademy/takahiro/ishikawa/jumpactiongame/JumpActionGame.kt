@@ -11,7 +11,7 @@ class JumpActionGame : Game() {
 
     override fun create() {
         batch = SpriteBatch()
-        setScreen(GameScreen(this))
+        setScreen(StartScreen(this, mHighScore))
     }
 
     override fun dispose() {
