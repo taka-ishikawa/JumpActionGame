@@ -1,6 +1,7 @@
 package jp.techacademy.takahiro.ishikawa.jumpactiongame
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -11,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FitViewport
 
-class ResultScreen(private val mGame: JumpActionGame, private val mScore: Int)
+class StartScreen(private val mGame: JumpActionGame, private var mHighScore: Int)
     : ScreenAdapter() {
 
     companion object {
@@ -23,14 +24,13 @@ class ResultScreen(private val mGame: JumpActionGame, private val mScore: Int)
     private val mGuiCamera: OrthographicCamera
     private val mGuiViewPort: FitViewport
     private var mFont: BitmapFont
+    private var mPrefs: Preferences
 
 //    private val soundAlien = Gdx.audio.newSound(Gdx.files.internal("alien.mp3"))
 //    private val soundIdAlien = soundAlien.play()
     private val soundStart = Gdx.audio.newSound(Gdx.files.internal("start.mp3"))
 
     init {
-        mGame.mRequestHandler.showAds(true)
-
         // 背景の準備
         val bgTexture = Texture("resultback.png")
         mBg = Sprite(TextureRegion(bgTexture, 0, 0, 540, 810))
@@ -44,6 +44,9 @@ class ResultScreen(private val mGame: JumpActionGame, private val mScore: Int)
 
         // フォント
         mFont = BitmapFont(Gdx.files.internal("font.fnt"), Gdx.files.internal("font.png"), false)
+
+        mPrefs = Gdx.app.getPreferences("jp.techacademy.takahiro.ishikawa.jumpactiongame")
+        mHighScore = mPrefs.getInteger("HIGHSCORE", 0)
     }
 
     override fun render(delta: Float) {
@@ -57,13 +60,18 @@ class ResultScreen(private val mGame: JumpActionGame, private val mScore: Int)
 
         mGame.batch.begin()
         mBg.draw(mGame.batch)
-//        mFont.draw(mGame.batch, "HighScore: $mHighScore", 0f, GUI_HEIGHT / 2 + 40, GUI_WIDTH, Align.center, false)
-        mFont.draw(mGame.batch, "Score: $mScore", 0f, GUI_HEIGHT / 2 + 20, GUI_WIDTH, Align.center, false)
-        mFont.draw(mGame.batch, "Retry?", 0f, GUI_HEIGHT / 2 - 40, GUI_WIDTH, Align.center, false)
+        mFont.draw(mGame.batch, "HighScore: $mHighScore", 0f, GUI_HEIGHT / 2 + 20, GUI_WIDTH, Align.center, false)
+        mFont.draw(mGame.batch, "Start!", 0f, GUI_HEIGHT / 2 - 40, GUI_WIDTH, Align.center, false)
         mGame.batch.end()
 
+        var gateKeeper = 0
+        if (gateKeeper > 0) {
+            return
+        } else {
+            gateKeeper += 1
+        }
+
         if (Gdx.input.justTouched()) {
-            mGame.mRequestHandler.showAds(false)
             soundStart.play()
             mGame.screen = GameScreen(mGame)
         }
